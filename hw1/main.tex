@@ -1,0 +1,150 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\renewcommand\qedsymbol{//}
+
+\title{CSC 544 Homework 1}
+\author{Calvin Higgins}
+\date{September 2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+
+Let $Z = \{ 0 1^k 0 \mid k \geq 0 \}$.
+
+\subsection*{Part (a)}
+
+Give a GNFA that recognizes $Z$.
+
+TODO
+
+\subsection*{Part (b)}
+
+Give a regular expression that generates $Z$.
+
+TODO
+
+\section*{Problem 2}
+
+\subsection*{Part (a)}
+
+Let $L = \{ \text{abra}(\text{cad})^k\text{abra} \mid k \geq 1 \}$. Prove or disprove: $L$ is regular.
+
+\begin{proof}
+    We will show that $L$ is regular by construction. Let $A = \{ \text{abra} \}$ and $C = \{ \text{cad} \}$. Since $A$ and $C$ have finite cardinality, they 
+    are regular. Define $L' = A \circ C \circ C^* \circ A$. Since $A$ and $C$ are regular, and the class of regular languages is closed under $\circ$ and $*$, 
+    $L'$ is regular. \\
+    
+    \noindent
+    We will argue that $L' = L$. Note that
+    \begin{align*}
+        L' &= A \circ C \circ C^* \circ A \\
+        &= \{ \text{abra} \} \circ \{ \text{cad} \} \circ \{ (\text{cad})^k \mid k \geq 0 \} \circ \{ \text{abra} \} \\
+        &= \{ \text{abra} \} \circ \{ (\text{cad})^k \mid k \geq 1 \} \circ \{ \text{abra} \} \\
+        &=  \{ \text{abra} (\text{cad})^k \text{abra} \mid k \geq 1 \} \\
+        &= L
+    \end{align*} 
+    so $L$ is regular as desired.
+\end{proof}
+
+\subsection*{Part (b)}
+
+Let $L = \{ (\text{abra})^r (\text{cad})^k (\text{abra})^r \mid k \geq 1, r \geq 0 \}$. Prove or disprove: $L$ is regular.
+
+\begin{proof}
+    TODO
+\end{proof}
+
+\section*{Problem 3}
+
+Let $\Sigma = \{ 0, 1 \}$.
+
+\subsection*{Part (a)}
+
+Let $L = \{ xyx \mid x, y \in \Sigma^* \}$. Prove that $L$ is regular.
+
+\begin{proof}
+    We will show that $L$ is regular by construction. The main idea is that $L$ contains all strings (e.g. take $x = \epsilon$). Since $\Sigma$ has finite 
+    cardinality, $\Sigma$ is regular. Define $L' = \Sigma^*$. Since $\Sigma$ is regular, and the class of regular languages is closed under $*$, $L'$ is 
+    regular. \\
+    
+    \noindent
+    We will argue that $L' = L$. Clearly $L \subseteq L' = \Sigma^*$. Fix some $s \in L'$. Let $x = \epsilon$ and $y = s$. Then $x \in \Sigma^*$ and 
+    $y \in L' = \Sigma^*$. By definition, $xyx \in L$, so $xyx = \epsilon s \epsilon = s \in L$. Therefore, $L' \subseteq L$. Hence, $L' = L$, so $L$ is regular 
+    as desired.
+\end{proof}
+
+\subsection*{Part (b)}
+
+Let $L = \{ xyxy \mid x, y \in \Sigma^* \}$. Prove that $L$ is not regular. 
+
+\begin{proof}
+    We will show that $L$ is not regular via the pumping lemma. Assume that $L$ is regular, and let $p$ be the pumping length. Take $x = 0^p 1^p$ and 
+    $y = 0^p 1^p$. Then $x, y \in \Sigma^*$, so $s = xyxy \in L$. \\
+
+    \noindent
+    We will show that $s$ cannot be pumped. For any choice of $u, v, w$ such that $uvw = s$ and $1 \leq |uv| \leq p$, $v = 0^k$ for some $1 \leq k \leq p$ since
+    the first $p$ symbols in $s$ are all zero. By the pumping lemma, $s' = uv^0w = 0^{p - k} 1^p 0^p 1^p \in L$. Suppose there exists some choice of $x', y'$ 
+    such that $s' = x' y' x' y'$. Then, the first half of $s'$ is $x' y' = 0^{p - k}1^{p} 1^{k/2}$ and the second half of $s'$ is $x'y' = 1^{p-k/2}0^p$. 
+    However, the first half is not the same as the second half, so $x' y' \neq x' y'$ which is impossible. Thus, there is no choice of $x' y'$ such that  
+    $s' = x' y' x' y'$, so $s' \not \in L$, which is impossible. Hence $L$ is not regular as desired.
+\end{proof}
+
+\section*{Problem 4}
+
+\subsection*{Part (a)}
+
+Prove or disprove: the class of regular languages is closed under union.
+
+\begin{proof}
+    Let $L_1$ and $L_2$ be regular languages. We will show that $L = L_1 \cup L_2$ is regular by construction. \\
+    
+    \noindent
+    Since $L_1$ is regular, there exists some DFA $M_1 = (Q_1, \Sigma_1, \delta_1, q_{0}^1, F_1)$ that recognizes $L_1$, and since $L_2$ is regular, there 
+    exists some DFA $M_2 = (Q_2, \Sigma_2, \delta_2, q_{0}^2, F_2)$ that recognizes $L_2$. Define DFA 
+    \begin{align*}
+        M = ((Q_1 \cup q_{\text{reject}}) \times (Q_2 \cup q_{\text{reject}}), \Sigma_1 \cup \Sigma_2, \delta, (q_{0}^1, q_{0}^2), (F_1 \times Q_2) \cup (Q_1 \times F_2))
+    \end{align*}
+    where
+    \begin{align*}
+        \delta(s_k, (q_i^1, q_j^2)) = \begin{cases}
+            (\delta_1(q_i^1), \delta_2(q_j^2)) & \text{ if } s_k \in \Sigma_1 \land s_k \in \Sigma_2 \land q_i^1 \in Q_1 \land q_j^2 \in Q_2 \\
+            (\delta_1(q_i^1), q_{\text{reject}}) & \text{ if } s_k \in \Sigma_1 \land s_k \not \in \Sigma_2 \land q_i^1 \in Q_1 \\
+            (q_{\text{reject}}, \delta_2(q_j^2)) & \text{ if } s_k \not \in \Sigma_1 \land s_k \in \Sigma_2 \land q_j^2 \in Q_2 \\
+            (q_{\text{reject}}, q_{\text{reject}}) & \text{ otherwise}
+        \end{cases}
+    \end{align*}
+
+    \noindent
+    We will show that $M$ recognizes $L$. \\ 
+    
+    \noindent
+    Fix some $s \in L$. Then $s = s_1 s_2 \ldots s_m$. TODO.
+\end{proof}
+
+\subsection*{Part (b)}
+
+Prove or disprove: the class of regular languages is closed under concatenation.
+
+% idea: nfa, guess the split point starting from accept states in M_1
+\begin{proof}
+    TODO
+\end{proof}
+
+\subsection*{Part (c)}
+
+Prove or disprove: the class of regular languages is closed under star.
+
+% idea: add new start start with eps to old start state. eps from old accept states to new start state. new start state is only accept state.
+\begin{proof}
+    TODO
+\end{proof}
+
+\end{document}
