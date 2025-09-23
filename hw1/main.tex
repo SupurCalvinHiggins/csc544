@@ -216,6 +216,7 @@ Prove or disprove: the class of regular languages is closed under concatenation.
             \begin{align*}
                 r_i = r_0^2 = q_0^2 \in \delta(\epsilon, r_{|a|}^1) = \delta(s'_{|a|}, r_{i-1}) 
             \end{align*}
+            since $r_{|a|}^1 \in F_1$.
 
             \item Assume $|a| + 2 \leq i \leq |s'|$. Then
             \begin{align*}
@@ -228,11 +229,26 @@ Prove or disprove: the class of regular languages is closed under concatenation.
     Therefore, $M$ accepts $s$. \\
 
     \noindent
-    Fix some $s = s_1 s_2 \ldots s_m$ where $M$ accepts $s$. Then, there exists some accepting sequence of states 
-    $r = r_1 r_2 \ldots r_t \epsilon r_{t+2} \ldots r_m$, where $r$ must contain $\epsilon$ otherwise all $q \in Q_2$ are unreachable, which is impossible since
-    $r_m \in F_2 \subseteq Q_2$. Define $a = s_1 \ldots s_{k}$ and $b = s_{k+2} \ldots s_m$. We must show that $a \in L_1$ and $b \in L_1$. First, we show that 
-    $a \in L_1$. Since  \\
-    
+    Fix some $s = s_1 s_2 \ldots s_m$ where $M$ accepts $s$. Then, there exists some accepting sequence of states $r = r_0 r_1 \ldots r_m$. Since 
+    $r_m \in F_2 \subseteq Q_2$, there exists $r_i \in Q_2$. Let $r_{t+1}$ be the first such $r_i \in Q_2$. Then $r_t \in Q_1$ so $s_{t+1} = \epsilon$, since 
+    the states in $Q_2$ are only reachable from the states in $Q_1$ by $\epsilon$-moves. Define $a = s_1 \ldots s_{t}$ and $b = s_{t+2} \ldots s_{m}$. Then
+    $s = a \epsilon b = a b$. We must show that $a \in L_1$ and $b \in L_1$. First, we show that $a \in L_1$. Define 
+    \begin{align*}
+        r^1 = r_0^1 r_1^1 \ldots r_{t}^1 = r_0 r_1 \ldots r_{t}
+    \end{align*}
+    We must show that $r^1$ is an accepting sequence of states for $M_1$:
+    \begin{enumerate}
+        \item We have that $r^1_0 = r_0 = q_0^1$ which is the start state.
+        \item We have that $r^1_i = r_i \in \delta(s_i, r_{i-1})$, and by choice of $t$, $r_{i-1} \in Q_1$, so 
+        \begin{align*}
+            \delta(s_i, r_{i-1}) = \delta'_1(s_i, r_{i-1}) = \delta_1(s_i, r_{i-1}) = \delta_1(s_i, r_{i-1}^1)
+        \end{align*}
+        Thus, $r^1_i \in \delta_1(s_i, r_{i-1}^1)$.
+        \item We have that $r_{t}^1 = r_{t} \in F_1$. Because transitions from states in $Q_1$ to $Q_2$ can only occur from 
+        states in $F_1$, if $r_t \not \in F_1$, $r_{t+1} \not \in Q_2$ which is impossible. Thus, $r_t$ is an accept state.  
+    \end{enumerate}
+    The proof that $b \in L_2$ proceeds similarly. Therefore, $s = a\epsilon b = ab \in L$. \\
+
     \noindent
     Thus $M$ accepts $s$ if and only if $s \in L$. Hence $L$ is regular as desired.
 \end{proof}
@@ -243,7 +259,36 @@ Prove or disprove: the class of regular languages is closed under star.
 
 % idea: add new start start with eps to old start state. eps from old accept states to new start state. new start state is only accept state.
 \begin{proof}
-    TODO
+    Let $L_1$ be a regular language. We will show that $L = L_1^*$ by construction. The main idea is to non-deterministically split $s = a^1 a^2 \ldots a^m$ 
+    where $a^1, a^2, \ldots, a^m \in L_2$ ($a^{i}$ is the $i$-th word, not $a$ repeated $i$ times). \\
+
+    \noindent
+    Since $L_1$ is regular, there exists some NFA $M_1 = (Q_1, \Sigma_1, \delta_1, q_0^1, F_1)$ that recognizes $L_1$. Define NFA
+    \begin{align*}
+        M = (Q_1 \cup \{ q_{\text{start}} \}, \Sigma_1, \delta, q_{\text{start}}, \{ q_{\text{start}} \})
+    \end{align*}
+    where
+    \begin{align*}
+        \delta'_1(s_k, q_i) &= \begin{cases}
+            \delta_1(s_k, q_i) & \text{ if } q_i \in Q_1 \land s_k \in \Sigma_1 \cup \{ \epsilon \} \\
+            \emptyset & \text{ otherwise}
+        \end{cases} \\
+        \delta(s_k, q_i) &= \begin{cases}
+            \{ q_0^1 \} & \text{ if } q_i = q_{\text{start}} \land s_k = \epsilon \\
+            \delta'_1(s_k, q_i) \cup \{ q_{\text{start}} \} & \text{ if } q_i \in F_1 \land s_k = \epsilon \\
+            \delta'_1(s_k, q_i) & \text{ otherwise}
+        \end{cases}
+    \end{align*}
+    We will show that $M$ recognizes $L$. First, we show that if $s \in L$, then $M$ accepts $s$. Then, we show that if $M$ accepts $s$, then $s \in L$. \\
+
+    \noindent
+    Fix some $s \in L$ where $s = s_1 s_2 \ldots s_m$. TODO. \\
+
+    \noindent
+    Fix some $s = s_1 s_2 \ldots s_m$ where $M$ accepts $s$. TODO \\
+
+    \noindent
+    Thus $M$ accepts $s$ if and only if $s \in L$. Hence $L$ is regular as desired.
 \end{proof}
 
 \end{document}
