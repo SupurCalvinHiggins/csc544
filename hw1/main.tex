@@ -21,15 +21,18 @@ Let $Z = \{ 0 1^k 0 \mid k \geq 0 \}$.
 
 \subsection*{Part (a)}
 
-Give a GNFA that recognizes $Z$.
+Give a GNFA that recognizes $Z$. \\
 
-TODO
+\noindent
+The GNFA has two states: one is the start state, the other is the accept state. There is a single arrow from the start state to the accept state labeled with 
+the regular expression $01^*0$. 
 
 \subsection*{Part (b)}
 
-Give a regular expression that generates $Z$.
+Give a regular expression that generates $Z$. \\
 
-TODO
+\noindent
+The expression $01^*0$ generates $Z$.
 
 \section*{Problem 2}
 
@@ -59,7 +62,17 @@ Let $L = \{ \text{abra}(\text{cad})^k\text{abra} \mid k \geq 1 \}$. Prove or dis
 Let $L = \{ (\text{abra})^r (\text{cad})^k (\text{abra})^r \mid k \geq 1, r \geq 0 \}$. Prove or disprove: $L$ is regular.
 
 \begin{proof}
-    TODO
+    We will show that $L$ is not regular via the pumping lemma. Assume that $L$ is regular, and let $p$ be the pumping length. Take 
+    \begin{align*}
+        s = (\text{abra})^p (\text{cad}) (\text{abra})^p 
+    \end{align*}
+    so $s \in L$. \\
+
+    \noindent
+    We will show that $s$ cannot be pumped. For any choice of $u, v, w$ such that $uvw = s$ and $1 \leq |uv| \leq p$, $v$ contains some fragment of some 
+    abra to the left of cad. Pumping down, we have that $s' = uv^0w = uw \in L$. However, $s'$ contains too few symbols to form enough abra's on the left
+    to match the $p$ abras on the right (\textit{the casework is too painful for anything but hand waving}), so $s' \not \in L$, which is impossible. Hence $L$
+    is not regular.
 \end{proof}
 
 \section*{Problem 3}
@@ -104,7 +117,8 @@ Let $L = \{ xyxy \mid x, y \in \Sigma^* \}$. Prove that $L$ is not regular.
 Prove or disprove: the class of regular languages is closed under union.
 
 \begin{proof}
-    Let $L_1$ and $L_2$ be regular languages. We will show that $L = L_1 \cup L_2$ is regular by construction. \\
+    Let $L_1$ and $L_2$ be regular languages. We will show that $L = L_1 \cup L_2$ is regular by construction. The main idea is to simulate $M_1$ and $M_2$ 
+    simultaneously, and accept if either accepts. \\
     
     \noindent
     Since $L_1$ is regular, there exists some DFA $M_1 = (Q_1, \Sigma_1, \delta_1, q_{0}^1, F_1)$ that recognizes $L_1$, and since $L_2$ is regular, there 
@@ -123,10 +137,23 @@ Prove or disprove: the class of regular languages is closed under union.
     \end{align*}
 
     \noindent
-    We will show that $M$ recognizes $L$. \\ 
+    We will show that $M$ recognizes $L$. First, we show that if $s \in L$, then $M$ accepts $s$. Then, we show that if $M$ accepts $s$, then $s \in L$. \\ 
     
     \noindent
-    Fix some $s \in L$. Then $s = s_1 s_2 \ldots s_m$. TODO.
+    Fix some $s \in L$ such that $s = s_1 s_2 \ldots s_m$. Define $r_0 = (q_0^1, q_0^2)$, and $r_{i+1} = \delta(s_i, r_i)$ for $0 \leq i \leq m - 1$. Since 
+    $s \in L$, either $s \in L_1$ or $s \in L_2$. Assume $s \in L_1$. Then $M_1$ accepts $s$, so there exists some $r_0^1 = q_0^1$, 
+    $r_{i+1}^1 = \delta_1(s_i, r_i^1)$ for $0 \leq i \leq m - 1$, where $r_m^1 \in F_1$. Consider the sequence of states $r_0, r_1, \ldots, r_m$ taken by $M$ on 
+    $s$. Since the first component of $r_0$ is $q_0^1$, by definition of $M$, the first component of each $r_i$ is $r_i^1$. Thus, the first component of $r_m$ 
+    is $r_m^1$, so $r_m \in F_1 \times Q_2$. By definition, $r_m$ is an accept state, so $M$ accepts $s$. The case where $s \in L_2$ is similar. \\
+
+    \noindent
+    Fix some $s$ accepted by $M$ such that $s = s_1 s_2 \ldots s_m$. Then, there exists some $r_0 = (q_0^1, q_0^2)$ and $r_{i+1} = \delta(s_i, r_i)$ for 
+    $0 \leq i \leq m - 1$ such that $r_m = (q_j^1, q_k^2)$ where $q_j^1 \in Q_1$ or $q_k^2 \in Q_2$. Assume $q_j^1 \in Q_1$. By definition of $M$, there exists 
+    $r_0^1 = q_0^1$, $r_{i+1}^1 = \delta_1(s_i, r_i^1)$ for $0 \leq i \leq m - 1$, such that $r_{m}^1 = q_j^1 \in Q_1$, namely $r_i^1$ is the first component of
+    each $r_i$. Thus, $M_1$ accepts $s$, so $s \in L_1 \subseteq L$. The case where $q_k^2 \in Q_2$ is similar. \\
+
+    \noindent
+    Thus $M$ accepts $s$ if and only if $s \in L$. Hence $L$ is regular as desired.
 \end{proof}
 
 \subsection*{Part (b)}
@@ -134,8 +161,80 @@ Prove or disprove: the class of regular languages is closed under union.
 Prove or disprove: the class of regular languages is closed under concatenation.
 
 % idea: nfa, guess the split point starting from accept states in M_1
+% eps arrow from M_1 accept to M_2 start
 \begin{proof}
-    TODO
+    Let $L_1$ and $L_2$ be regular languages. We will show that $L = L_1 \circ L_2$ is regular by construction. The main idea is to non-deterministically guess 
+    a split $s = a b$ such that $a \in L_1$ and $b \in L_2$. \\
+
+    \noindent
+    Since $L_1$ is regular, there exists some NFA $M_1 = (Q_1, \Sigma_1, \delta_1, q_0^1, F_1)$ that recognizes $L_1$, and since $L_2$ is regular, there exists
+    some NFA $M_2 = (Q_2, \Sigma_2, \delta_2, q_0^2, F_2)$ that recognizes $L_2$. Define NFA
+    \begin{align*}
+        M = (Q_1 \cup Q_2, \Sigma_1 \cup \Sigma_2, \delta, q_0^1, F_2)
+    \end{align*}
+    where
+    \begin{align*}
+        \delta'_1(s_k, q_i) &= \begin{cases}
+            \delta_1(s_k, q_i) & \text{ if } q_i \in Q_1 \land s_k \in \Sigma_1 \cup \{ \epsilon \} \\
+            \emptyset & \text{ otherwise}
+        \end{cases} \\
+        \delta'_2(s_k, q_i) &= \begin{cases}
+            \delta_2(s_k, q_i) & \text{ if } q_i \in Q_2 \land s_k \in \Sigma_2 \cup \{ \epsilon \} \\
+            \emptyset & \text{ otherwise}
+        \end{cases} \\
+        \delta(s_k, q_i) &= \begin{cases}
+            \delta'_1(s_k, q_i) \cup \{ q_0^2 \} & \text{ if } q_i \in F_1 \land s_k = \epsilon \\
+            \delta'_1(s_k, q_i) \cup \delta'_2(s_k, q_i) & \text{ otherwise}
+        \end{cases}
+    \end{align*}
+    We will show that $M$ recognizes $L$. First, we show that if $s \in L$, then $M$ accepts $s$. Then, we show that if $M$ accepts $s$, then $s \in L$. \\
+
+    \noindent
+    Fix some $s \in L$ where $s = s_1 s_2 \ldots s_m$. Then, there exists $a \in L_1$ and $b \in L_2$ such that $s = a b$. Since $a \in L_1$, $M_1$ 
+    accepts $a$. Therefore, there exists some $r_0^1 = q_0^1$, $r_i^1 \in \delta_1(a_i, r_{i-1}^1)$ for $1 \leq i \leq |a|$, where $r_{|a|}^1 \in F_1$. Likewise, 
+    $M_2$ accepts $b$. Therefore, there exists some $r_0^2 = q_0^2$, $r_i^2 \in \delta_2(b_i, r_{i-1}^2)$ for $1 \leq i \leq |b|$, where $r_{|b|}^2 \in F_2$. 
+    Define $s' = a \epsilon b = s$, and $r = r_1 r_2 \ldots r_{|s'|}$ where
+    \begin{align*}
+        r_{i} = \begin{cases}
+            r_0^1 & \text{ if } i = 0 \\
+            r_i^1 & \text{ if } 1 \leq i \leq |a| \\
+            r_0^2 & \text{ if } i = |a| + 1 \\
+            r_i^2 & \text{ if } |a| + 2 \leq i \leq |s'|
+        \end{cases}
+    \end{align*}
+    Now, we must verify that $r$ is an accepting computation of $M$ on $s'$:
+    \begin{enumerate}
+        \item We have that $r_0 = r_0^1 = q_0^1$ which is the start state of $M$.
+        \item We consider three subcases
+        \begin{enumerate}
+            \item Assume $1 \leq i \leq |a|$. Then 
+            \begin{align*}
+                r_i = r_i^1 \in \delta_1(a_i, r_{i-1}^1) = \delta'_1(s'_i, r_{i-1}) \subseteq \delta(s'_i, r_{i-1})
+            \end{align*}
+
+            \item Assume $i = |a| + 1$. Then 
+            \begin{align*}
+                r_i = r_0^2 = q_0^2 \in \delta(\epsilon, r_{|a|}^1) = \delta(s'_{|a|}, r_{i-1}) 
+            \end{align*}
+
+            \item Assume $|a| + 2 \leq i \leq |s'|$. Then
+            \begin{align*}
+                r_i = r_i^2 \in \delta_2(b_i, r_{i-|a|-2}^2) = \delta'_1(s'_i, r_{i-1}) \subseteq \delta(s'_i, r_{i-1})
+            \end{align*}
+        \end{enumerate}
+        so for all $1 \leq i \leq |s'|$, $r_i \in \delta(s'_i, r_{i-1})$.
+        \item We have that $r_{|s'|} = r_{|b|}^2 \in F_2$, so the final state is an accept state.
+    \end{enumerate}
+    Therefore, $M$ accepts $s$. \\
+
+    \noindent
+    Fix some $s = s_1 s_2 \ldots s_m$ where $M$ accepts $s$. Then, there exists some accepting sequence of states 
+    $r = r_1 r_2 \ldots r_t \epsilon r_{t+2} \ldots r_m$, where $r$ must contain $\epsilon$ otherwise all $q \in Q_2$ are unreachable, which is impossible since
+    $r_m \in F_2 \subseteq Q_2$. Define $a = s_1 \ldots s_{k}$ and $b = s_{k+2} \ldots s_m$. We must show that $a \in L_1$ and $b \in L_1$. First, we show that 
+    $a \in L_1$. Since  \\
+    
+    \noindent
+    Thus $M$ accepts $s$ if and only if $s \in L$. Hence $L$ is regular as desired.
 \end{proof}
 
 \subsection*{Part (c)}
