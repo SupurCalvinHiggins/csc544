@@ -69,7 +69,7 @@ Let $L = \{ (\text{abra})^r (\text{cad})^k (\text{abra})^r \mid k \geq 1, r \geq
     so $s \in L$. \\
 
     \noindent
-    We will show that $s$ cannot be pumped. For any choice of $u, v, w$ such that $uvw = s$ and $1 \leq |uv| \leq p$, $v$ contains some fragment of some 
+    We will show that $s$ cannot be pumped. For any choice of $u, v, w$ such that $uvw = s$, $|uv| \leq p$ and $|v| \geq 1$, $v$ contains some fragment of some 
     abra to the left of cad. Pumping down, we have that $s' = uv^0w = uw \in L$. However, $s'$ contains too few symbols to form enough abra's on the left
     to match the $p$ abras on the right (\textit{the casework is too painful for anything but hand waving}), so $s' \not \in L$, which is impossible. Hence $L$
     is not regular.
@@ -103,7 +103,7 @@ Let $L = \{ xyxy \mid x, y \in \Sigma^* \}$. Prove that $L$ is not regular.
     $y = 0^p 1^p$. Then $x, y \in \Sigma^*$, so $s = xyxy \in L$. \\
 
     \noindent
-    We will show that $s$ cannot be pumped. For any choice of $u, v, w$ such that $uvw = s$ and $1 \leq |uv| \leq p$, $v = 0^k$ for some $1 \leq k \leq p$ since
+    We will show that $s$ cannot be pumped. For any choice of $u, v, w$ such that $uvw = s$, $|uv| \leq p$ and $|v| \geq 1$, $v = 0^k$ for some $1 \leq k \leq p$ since
     the first $p$ symbols in $s$ are all zero. By the pumping lemma, $s' = uv^0w = 0^{p - k} 1^p 0^p 1^p \in L$. Suppose there exists some choice of $x', y'$ 
     such that $s' = x' y' x' y'$. Then, the first half of $s'$ is $x' y' = 0^{p - k}1^{p} 1^{k/2}$ and the second half of $s'$ is $x'y' = 1^{p-k/2}0^p$. 
     However, the first half is not the same as the second half, so $x' y' \neq x' y'$ which is impossible. Thus, there is no choice of $x' y'$ such that  
@@ -164,7 +164,8 @@ Prove or disprove: the class of regular languages is closed under concatenation.
 % eps arrow from M_1 accept to M_2 start
 \begin{proof}
     Let $L_1$ and $L_2$ be regular languages. We will show that $L = L_1 \circ L_2$ is regular by construction. The main idea is to non-deterministically guess 
-    a split $s = a b$ such that $a \in L_1$ and $b \in L_2$. \\
+    a split $s = a b$ such that $a \in L_1$ and $b \in L_2$. We start in the machine recognizing $L_1$, $\epsilon$-move from the accept states in the machine 
+    recognizing $L_1$ to the start state in the machine recognizing $L_2$, and accept if the machine recognizing $L_2$ accepts.  \\
 
     \noindent
     Since $L_1$ is regular, there exists some NFA $M_1 = (Q_1, \Sigma_1, \delta_1, q_0^1, F_1)$ that recognizes $L_1$, and since $L_2$ is regular, there exists
@@ -257,10 +258,10 @@ Prove or disprove: the class of regular languages is closed under concatenation.
 
 Prove or disprove: the class of regular languages is closed under star.
 
-% idea: add new start start with eps to old start state. eps from old accept states to new start state. new start state is only accept state.
 \begin{proof}
     Let $L_1$ be a regular language. We will show that $L = L_1^*$ by construction. The main idea is to non-deterministically split $s = a^1 a^2 \ldots a^m$ 
-    where $a^1, a^2, \ldots, a^m \in L_2$ ($a^{i}$ is the $i$-th word, not $a$ repeated $i$ times). \\
+    where $a^1, a^2, \ldots, a^m \in L_2$ ($a^{i}$ is the $i$-th word, not $a$ repeated $i$ times). We define a new start state as the only accept state, and
+    $\epsilon$-move from the new start state to the old start state, and from each old accept state to the new start state. \\
 
     \noindent
     Since $L_1$ is regular, there exists some NFA $M_1 = (Q_1, \Sigma_1, \delta_1, q_0^1, F_1)$ that recognizes $L_1$. Define NFA
@@ -279,13 +280,20 @@ Prove or disprove: the class of regular languages is closed under star.
             \delta'_1(s_k, q_i) & \text{ otherwise}
         \end{cases}
     \end{align*}
-    We will show that $M$ recognizes $L$. First, we show that if $s \in L$, then $M$ accepts $s$. Then, we show that if $M$ accepts $s$, then $s \in L$. \\
+    We will show that $M$ recognizes $L$. First, we show that if $s \in L$, then $M$ accepts $s$. Then, we show that if $M$ accepts $s$, then $s \in L$. Since 
+    I'm out of time, and have (hopefully) sufficiently demonstrated that I can grind out DFA proofs, I will just give a proof sketch for both directions. \\
 
     \noindent
-    Fix some $s \in L$ where $s = s_1 s_2 \ldots s_m$. TODO. \\
+    Fix some $s \in L$. Since $s \in L$, $s = a^1 a^2 \ldots a^m$ where each $a^i \in L_1$. Since $a^i \in L_1$, there is an accepting sequence of states $r^i$ 
+    in $M_1$. Define $r = r^1 r^2 \ldots r^m$. Then, take $s' = \epsilon a^1 \epsilon \epsilon a^2 \epsilon \epsilon \ldots \epsilon \epsilon a^m \epsilon = s$. It can be shown that $r$ is an accepting
+    sequence of states for $M$ on $s'$, so $M$ accepts $s' = s$. \\
 
     \noindent
-    Fix some $s = s_1 s_2 \ldots s_m$ where $M$ accepts $s$. TODO \\
+    Fix some $s$ where $M$ accepts $s$. Since $M$ accepts $s$, there is an accepting sequence of states $r = r_0 r_1 \ldots r_{m}$. Split $r$ into the maximum 
+    number of segments $r^1, r^2, \ldots r^n$, such that 
+    $r = q_{\text{start}} r^1 q_{\text{start}} r^2 q_{\text{start}} \ldots q_{\text{start}} r^n q_{\text{start}}$. Then, it can be shown that each 
+    $r^1, r^2 \ldots r^n$ is an accepting sequence for $M_1$ given the corresponding substring in $a^1, a^2, \ldots a^n$, where 
+    $s' = \epsilon a^1 \epsilon \epsilon a^2 \epsilon \epsilon \ldots \epsilon \epsilon a^n \epsilon = s$. Thus $a^1, a^2, \ldots, a^n \in L_1$, so $s \in L$. \\
 
     \noindent
     Thus $M$ accepts $s$ if and only if $s \in L$. Hence $L$ is regular as desired.
