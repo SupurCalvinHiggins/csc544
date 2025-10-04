@@ -114,6 +114,85 @@ Let $L = \{ xyxy \mid x, y \in \Sigma^* \}$. Prove that $L$ is not regular.
 
 \subsection*{Part (a)}
 
+Prove or disprove: the class of non-regular languages is closed under union.
+
+\begin{proof}
+    We will show that the class of non-regular languages is not closed under union by counterexample. The main idea is that the complement of a non-regular 
+    language is non-regular, but the union of any language and its complement is regular. \\
+
+    \noindent
+    First, we will show that class of non-regular languages is closed under complement. For the sake of contradiction, suppose not. Then, there exists some 
+    non-regular language $L$ such that $L^c$ is regular. However, since the class of regular languages is closed under complement, $(L^c)^c = L$ is regular, 
+    which is impossible. Therefore, the class of non-regular languages is closed under complement. \\
+
+    \noindent
+    Now, we will show that the class of non-regular languages is not closed under union. Fix some non-regular language $L$. Then $L^c$ is also non-regular.
+    However, $L \cup L^c = \Sigma^*$ which is regular.
+\end{proof}
+
+\subsection*{Part (b)}
+
+Prove or disprove: the class of non-regular languages is closed under concatenation.
+
+\begin{proof}
+    We will show that the class of non-regular languages is not closed under concatenation by counterexample. The main idea is that the set of unary strings 
+    with perfect square lengths is non-regular, but any integer can be written as the sum of four perfect squares, so any unary string can be written as the 
+    concatenation of four strings of perfect square length. \\
+
+    \noindent
+    Let $L = \{1^{n^2} \mid n \geq 0\}$ where $\Sigma = \{ 1 \}$. We will show that $L$ is non-regular via the pumping lemma. Assume that $L$ is regular, and
+    let $p$ be the pumping length. Take $s = 1^{(p+1)^2}$. \\
+    
+    \noindent
+    We will show that $s$ cannot be pumped. For any choice of $u,v,w$ such that $uvw = s$, $|uv| \leq p$ and $|v| \geq 1$, $v = 1^k$ for some $1 \leq k \leq p$.
+    By the pumping lemma, $s' = uv^0w = 1^{(p+1)^2 - k} \in L$. Since $k \geq 1$, $(p+1)^2 - k \leq (p+1)^2 - 1 < (p+1)^2$. Since $k \leq p$, 
+    $(p+1)^2 - k \geq (p^2 + 2p + 1) - p > p^2$. Since $p^2 < (p+1)^2 - k < (p+1)^2$, $(p+1)^2 - k$ is not a perfect square, so $s' \not \in L$. Hence $s$ 
+    cannot be pumped, so $L$ is non-regular. \\
+
+    \noindent
+    Now, we will show that the class of non-regular languages is not closed under concatenation. By Lagrange's four square theorem, 
+    \begin{align*}
+        L \circ L \circ L \circ L &= \{1^{a^2} \mid a \geq 0 \} \circ\{1^{b^2} \mid b \geq 0 \} \circ \{1^{c^2} \mid c \geq 0 \} \circ \{1^{d^2} \mid d \geq 0 \} \\
+        &= \{1^{a^2} 1^{b^2} 1^{c^2} 1^{d^2} \mid a, b, c, d \geq 0 \} \\
+        &= \{1^{a^2 + b^2 + c^2 + d^2} \mid a, b, c, d \geq 0 \} \\
+        &= \{1^n \mid n \geq 0\} \\
+        &= \Sigma^*
+    \end{align*}
+    which is regular. 
+\end{proof}
+
+\subsection*{Part (c)}
+
+Prove or disprove: the class of non-regular languages is closed under star.
+
+\begin{proof}
+    We will show that the class of non-regular languages is not closed under star. The main idea is that non-regular languages remain non-regular under union 
+    with $\Sigma$, but then star generates $\Sigma^*$. \\
+
+    \noindent
+    Let $L$ be some non-regular language with alphabet $\Sigma$, and let $\Sigma^{-} = \Sigma - L$. Take $L' = L \cup \Sigma$. We will show that $L'$ is 
+    non-regular by contradiction. For the sake of contradiction, suppose that $L'$ is regular. Since $\Sigma^{-}$ is finite, $\Sigma^{-}$ is regular. Therefore,
+    $(\Sigma^{-})^c$ is regular. Since the class of regular languages is closed under intersection, $L' \cap (\Sigma^{-})^c$ is regular. However,
+    \begin{align*}
+        L' \cap (\Sigma^{-})^c &= (L \cup \Sigma^{-}) \cap (\Sigma^{-})^c \\
+        &= (L \cap (\Sigma^{-})^c) \cup (\Sigma^{-} \cap (\Sigma^{-})^c) \\
+        &= (L \cap (\Sigma - L)^c) \cup \emptyset \\
+        &= L
+    \end{align*}
+    which is impossible. Therefore, $L'$ is non-regular. \\
+    
+    \noindent
+    Now, we will show that the class of non-regular languages is not closed under star. We have that 
+    \begin{align*}
+        (L')^* = (L \cup \Sigma)^* = (L^* \cup \Sigma^*)^* = (\Sigma^*)^* = \Sigma^*
+    \end{align*}
+    which is regular.
+\end{proof}
+
+\section*{[Misread] Problem 4}
+
+\subsection*{Part (a)}
+
 Prove or disprove: the class of regular languages is closed under union.
 
 \begin{proof}
