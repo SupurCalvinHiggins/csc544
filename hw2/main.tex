@@ -1,0 +1,131 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\renewcommand\qedsymbol{//}
+
+\title{CSC 544 Homework 2}
+\author{Calvin Higgins}
+\date{September 2025}
+
+\begin{document}
+
+\maketitle
+
+\noindent
+As discussed in class, I assume that function juxtaposition is right-associative. I referred to~\url{https://j-hui.com/pages/normal-forms/} for the definitions 
+of beta normal form and weak normal form.
+
+\section*{Problem 1}
+
+Find a beta normal form for $(\lambda(x,y).(x,y,z))(4,3)$.
+
+\subsection*{Solution}
+
+We have that
+\begin{align*}
+    (\lambda(x,y).(x,y,z))(4,3) &= ((\lambda x. \lambda y.(x,y,z)) 4) 3 \\
+    &= (\lambda y.(4,y,z)) 3 \\
+    &= (4,3,z) \\
+\end{align*}
+
+\section*{Problem 2}
+
+Find a beta normal form for $(\lambda(x,y).y)(5,3)$.
+
+\subsection*{Solution}
+
+We have that 
+\begin{align*}
+    (\lambda(x,y).y)(5,3) &= ((\lambda x .\lambda y.y)5)3 \\
+    &= (\lambda y.y)3 \\
+    &= 3
+\end{align*}
+
+\section*{Problem 3}
+
+Find a beta normal form for $(\lambda x.x)(\lambda x.x)$
+
+\subsection*{Solution}
+
+We have that 
+\begin{align*}
+    (\lambda x.x)(\lambda x.x) &= \lambda x.x
+\end{align*}
+
+\section*{Problem 4}
+
+Find a beta normal form for $(\lambda x.(xx))(\lambda x.(xx))$.
+
+\subsection*{Solution}
+
+There is no beta normal form. After the $k$-th $\beta$-reduction, it is $(\lambda x.(xx))(\lambda x.(xx))$. Likewise, there is no weak normal form.
+
+\section*{Problem 5}
+
+Let $::$ be the concatenation operator. Find a beta normal form for $(\lambda (x :: q).q)(f :: u :: n :: [])$.
+
+\subsection*{Solution}
+
+We have that 
+\begin{align*}
+    (\lambda (x :: q).q)(f :: u :: n :: []) &= u :: n :: []
+\end{align*}
+
+\section*{Problem 6}
+
+Let $c\;?\;t : f$ be the ternary operator. Find a beta normal form for $(\lambda xyz.x > 0 \;?\; y : z)3(\lambda q.q-1)(\lambda p.p + 1) 1$.
+
+\subsection*{Solution}
+
+We have that
+\begin{align*}
+    (\lambda xyz.x > 0 \;?\; y : z)3(\lambda q.q-1)(\lambda p.p + 1) 1 
+    &= ((\lambda x .\lambda y .\lambda z.x > 0 \;?\; y : z)3)((\lambda q.q-1)((\lambda p.p + 1)1)) \\
+    &= ((\lambda x .\lambda y .\lambda z.x > 0 \;?\; y : z)3)((\lambda q.q-1)2) \\
+    &= ((\lambda x .\lambda y .\lambda z.x > 0 \;?\; y : z)3)1 \\
+    &= (\lambda y .\lambda z.3 > 0 \;?\; y : z)1 \\
+    &= (\lambda y .\lambda z.y)1 \\
+    &= (\lambda y.y)1 \\
+    &= 1 \\
+\end{align*}
+
+\section*{Problem 7}
+
+Find a beta normal form for $Ya$ where $Y = \lambda f.(\lambda x.f(xx))(\lambda x.f(xx))$.
+
+\subsection*{Solution}
+
+We have that
+\begin{align*}
+    Ya &= (\lambda f.(\lambda x.f(xx))(\lambda x.f(xx)))a \\
+    &= (\lambda x.a(xx))(\lambda x.a(xx)) \\
+    &= a((\lambda x.a(xx)) (\lambda x.a(xx))) \\
+    &= a((\lambda f.(\lambda x.f(xx)) (\lambda x.f(xx)))a) \\
+    &= aYa \\
+\end{align*}
+
+\noindent
+There is no beta normal form. After the $k$-th $\beta$-reduction, it is $a^k Y a$. However, $aYa$ is a weak normal form.
+
+\section*{Problem 8}
+
+Find a beta normal form for $Y(\lambda f.(\lambda x.(x=1)\;?\;1 : \mathrm{mult}(x, f(x-1))))$ where $Y = \lambda f.(\lambda x.f(xx))(\lambda x.f(xx))$.
+
+\subsection*{Solution}
+
+Let $F = \lambda f.(\lambda x.(x=1)\;?\;1 : \mathrm{mult}(x, f(x-1)))$. By Problem 7, we have that
+\begin{align*}
+    YF &= FYF \\
+    &= (\lambda f.(\lambda x.(x=1)\;?\;1 : \mathrm{mult}(x, f(x-1))))(YF) \\
+    &= \lambda x.(x=1)\;?\;1 : \mathrm{mult}(x, YF(x-1))
+\end{align*}
+
+\noindent
+Like Problem 7, there is no beta normal form. However, $\lambda x.(x=1)\;?\;1 : \mathrm{mult}(x, YF(x-1))$ is a weak normal form.
+
+\end{document}
