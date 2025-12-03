@@ -44,37 +44,37 @@ Prove that \textbf{CCP} is in \textbf{NP-Complete}.
     \textbf{CCP}, that is a graph $G' = (V', E')$ and integer $k$, such that $c(G') \geq k$ if and only if $G$ is 3-colorable. \\
 
     \noindent
-    For each vertex $v \in V$, create a new $K_3$, with vertices $v_r, v_g$ and $v_b$. The purpose of this gadget is to encode a vertex and its color. Exactly
-    one of the edges in each $K_3$ will be selected as part of the maximum conversation set. The color of $v$ is encoded by the vertex that is not incident to
-    the selected edge. For example, if $\{v_g, v_b\}$ is selected as the edge, then the color of vertex $v$ is red. \\
+    For each vertex $v \in V$, create $7|E|$ new $K_3$'s, each with vertices $v_r, v_g$ and $v_b$. The purpose of this gadget is to encode a vertex and its 
+    color. Exactly one edge from each $K_3$ will be selected as part of the maximum conversation set. The color of $v$ is encoded by the vertex that is 
+    not incident to the selected edge. For example, if $\{v_g, v_b\}$ is selected as the edge, then the color of vertex $v$ is red. Other gadgets will ensure
+    each copy selects the same color. \\
 
     \noindent
-    For each edge $\{u, v\} \in E$, create a new $K_{12}$ and twelve new edges uniquely pairing up each new vertex to a vertex in the $u$, $v$ vertex gadgets. 
-    The purpose of this gadget is to encode edges and the color constraint. If the $u, v$ vertex gadgets encode the same coloring, none of the new edges can be 
-    selected as part of the maximum conversation set. There are two cases. If an edge in the $K_{12}$ is taken, then no other edges incident to a vertex in the 
-    $K_{12}$ can be taken. Then, at most two additional edges can be taken, one from each $K_3$. If an edge from a $K_3$ to the $K_{12}$ is taken, then no 
-    other edges in that $K_3$ or the $K_{12}$ can be taken, so at most one additional edge in the other $K_3$ can be taken. In this manner, the $K_{12}$ ensures 
-    that if valid coloring exists for $u, v$, they will be colored as such in the maximum conversation set, since otherwise only two edges will be added instead
-    of three. \\
+    For every edge $\{u, v\} \in E$ and pair of non-equal colors $x, y$, create two new nodes $l$ and $r$. Add an edge between each 
+    $l$ and $r$, and from $l$ to each of the $|E|$ $u_x$, and likewise for $r$ and $v_y$. The purpose of this gadget is to encode edges and the color 
+    constraint. At most six edges can be taken from an edge gadget, and there are $|E|$ edge gadgets, for a total of $6|E|$ edges. However, $7|E|$ edges can
+    be taken from each vertex gadget since one edge can be taken from each $K_3$. Since more edges can be taken from a single vertex gadget than from
+    all edge gadgets, it's always optimal to take all possible vertex gadget edges. Moreover, the number of edges that can be taken from an 
+    edge gadget after taking all vertex gadgets is at most one when every $K_3$ for a vertex encodes the same color, and zero otherwise, every vertex gadget
+    will encode only one color. Finally, if two vertex gadgets have different colors, no edges can be taken from the edge gadget, and otherwise, one edge can
+    be taken. \\
 
     \noindent
-    Let $k = |E| + |V|$. The purpose of this gadget is to ensure that every vertex receives a color. Each vertex gadget can contribute at most one edge, and 
-    each edge gadget can contribute at most one edge to the maximum conversation set. \\
+    Let $k = 7|E||V| + |E|$. The purpose of this gadget is to ensure that every vertex receives a color and enforce the color constraint. Each vertex gadget can
+    contribute $7|E|$ edges, and each edge gadget can contribute at most one edge to the maximum conversation set. \\
 
     \noindent
     Clearly, this reduction is polynomial in $|V|$ and $|E|$. We aim to show that the reduction yields a yes instance if and only if $G$ is 3-colorable. \\
 
     \noindent
-    First, we show that if $G$ is 3-colorable, then the reduction yields a yes instance. Suppose $G$ is 3-colorable. For each vertex, take the edge in the 
-    gadget corresponding to its color. For example, if the vertex $v$ is red, take $\{v_g, v_b\}$. Then, consider each edge gadget. Since the incident vertices
-    are different colors, there are four vertices, the color vertices from the $K_3$'s, and their neighbors in the $K_{12}$, such that the edge between the two 
-    vertices in the $K_{12}$ can be taken, because neither of the color vertices are taken, and none of the other vertices in the $K_{12}$ are taken. Thus, the 
-    total number of taken edges is $|V| + |E|$ as desired. \\
+    First, we show that if $G$ is 3-colorable, then the reduction yields a yes instance. Suppose $G$ is 3-colorable. For each vertex $v$, select edges in its 
+    vertex gadget to encode $v$'s color. Then, since adjacent vertices are different colors, we can take some $\{l, r\}$ edge in each edge gadget. This is
+    a yes instance since we have found a valid set of $7|E||V| + |E|$ edges. \\
 
     \noindent
-    Next, we show that if the reduction yields a yes instance, then $G$ is 3-colorable. Suppose the reduction yields a yes instance. Color each vertex in $G$ 
-    according to the color of the corresponding vertex gadget. Since the reduction yields a yes instance, every edge gadget must have a taken edge, so the 
-    colors of the vertex gadgets must be different. Hence this is valid 3-coloring. \\
+    Next, we show that if the reduction yields a yes instance, then $G$ is 3-colorable. Suppose the reduction yields a yes instance. Then, each vertex gadget 
+    must encode one color. Color each vertex according to its gadget's color. Each edge gadget must have one edge taken, so adjacent vertex gadgets must encode
+    different colors. Hence we have a valid 3-coloring. \\
 
     \noindent
     Since there is a polynomial time reduction from \textbf{3-Coloring} to \textbf{CCP}, and \textbf{3-Coloring} is in \textbf{NP-Hard}, 
